@@ -1,6 +1,11 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"log"
+
+	"github.com/line/line-bot-sdk-go/v7/linebot"
+	"github.com/spf13/viper"
+)
 
 type Config struct {
 	MongoURI      string `mapstructure:"MONGO_URI"`
@@ -23,3 +28,19 @@ func LoadConfig(path string) (config Config, err error) {
 	err = viper.Unmarshal(&config)
 	return
 }
+
+func Genbot() *linebot.Client {
+	config, err := LoadConfig("./server")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	bot, err := linebot.New(config.ChannelSecret, config.ChannelToken)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return bot
+}
+
+var Bot *linebot.Client = Genbot()
