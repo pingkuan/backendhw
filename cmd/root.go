@@ -3,18 +3,25 @@ package cmd
 import (
 	"os"
 
+	"github.com/pingkuan/backendhw/server"
 	"github.com/spf13/cobra"
 )
 
+var port int
+
 var rootCmd = &cobra.Command{
 	Use:   "backendhw",
-	Short: "Storing line message to mongoDB",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "Storing line messages to mongoDB",
+	Long:  `An api receiving messages from line platform.`,
+}
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+var serverCmd = &cobra.Command{
+	Use:   "server",
+	Short: "start gin server",
+	Long:  `start gin server with given port.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		server.Server(port)
+	},
 }
 
 func Execute() {
@@ -25,5 +32,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.AddCommand(serverCmd)
+
+	serverCmd.Flags().IntVar(&port, "port", 8080, "Default port on 8080")
 }
