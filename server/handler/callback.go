@@ -42,7 +42,9 @@ func Callback(c *gin.Context) {
 					log.Println("Quota err:", err)
 					return
 				}
+
 				var user = model.User{}
+				//收到之訊息
 				var newMessage = model.Message{
 					ID:     message.ID,
 					Text:   message.Text,
@@ -52,24 +54,26 @@ func Callback(c *gin.Context) {
 				var userColl *mongo.Collection = db.GetCollection(db.DB, "users")
 				ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 				defer cancel()
-
+				//訊息傳送者的id
 				userid := event.Source.UserID
+				//查詢使用者是否已存在於資料庫
 				err = userColl.FindOne(ctx, bson.M{"userID": userid}).Decode(&user)
 				if err != nil {
+					//若不存在，則創建一新使用者，並回傳收到第一則訊息
 					if err == mongo.ErrNoDocuments {
 						var sliceMessage []model.Message
 						sliceMessage = append(sliceMessage, newMessage)
-						newUser := model.User{
-							UID:      primitive.NewObjectID(),
-							UserID:   userid,
-							Messages: sliceMessage,
-						}
 
-						_, err := userColl.InsertOne(ctx, newUser)
+						user.UID = primitive.NewObjectID()
+						user.UserID = userid
+						user.Messages = sliceMessage
+
+						_, err := userColl.InsertOne(ctx, user)
 						if err != nil {
 							log.Println(err)
 						}
-						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("第一則訊息，已輸入資料庫")).Do(); err != nil {
+
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("收到第一則訊息，已輸入資料庫")).Do(); err != nil {
 							log.Print(err)
 						}
 						return
@@ -77,6 +81,7 @@ func Callback(c *gin.Context) {
 					log.Println(err)
 					return
 				}
+				//若使用者已存在，則新增訊息於資料庫
 				updated, err := userColl.UpdateOne(ctx, bson.M{"userID": userid}, bson.M{"$push": bson.M{"messages": newMessage}})
 				if err != nil {
 					log.Println(err)
