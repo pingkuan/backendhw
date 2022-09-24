@@ -42,7 +42,7 @@ func Callback(c *gin.Context) {
 					log.Println("Quota err:", err)
 					return
 				}
-
+				//傳送訊息之使用者
 				var user = model.User{}
 				//收到之訊息
 				var newMessage = model.Message{
@@ -59,7 +59,7 @@ func Callback(c *gin.Context) {
 				//查詢使用者是否已存在於資料庫
 				err = userColl.FindOne(ctx, bson.M{"userID": userid}).Decode(&user)
 				if err != nil {
-					//若不存在，則創建一新使用者，並回傳收到第一則訊息
+					//若不存在，則創建一新使用者，並回傳收到的第一則訊息
 					if err == mongo.ErrNoDocuments {
 						var sliceMessage []model.Message
 						sliceMessage = append(sliceMessage, newMessage)
