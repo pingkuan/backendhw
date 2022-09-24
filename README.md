@@ -13,8 +13,12 @@ Use viper to read server.env file for mongouri、channel_secret and channel_acce
 
 ## Query message list from database
 
+Use GET https://{ngrokurl}/:userid to query message list
+
 ![Alt](https://drive.google.com/uc?export=view&id=1A2pZRGzCnaxxlDn8Zj9b3JxcEi4klLGc)
 
 ## Send message back to line
+
+Use POST https://{ngrokurl}/:userid to send message back to line
 
 ![Alt](https://drive.google.com/uc?export=view&id=106pricruV6_OJ1RhhFrXTsoG8ccYTSUM)
