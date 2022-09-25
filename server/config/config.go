@@ -29,7 +29,7 @@ func LoadConfig(path string) (config Config, err error) {
 	return
 }
 
-func Genbot() *linebot.Client {
+func GenBot() *linebot.Client {
 	config, err := LoadConfig("./server")
 	if err != nil {
 		log.Fatal(err)
@@ -43,4 +43,4 @@ func Genbot() *linebot.Client {
 	return bot
 }
 
-var Bot *linebot.Client = Genbot()
+var Bot *linebot.Client = GenBot()

@@ -12,7 +12,7 @@ type SendbackRequestBody struct {
 	Message string `json:"message"`
 }
 
-func Sendmessages(c *gin.Context) {
+func SendMessages(c *gin.Context) {
 	id := c.Param("userid")
 	body := SendbackRequestBody{}
 	var bot = config.Bot

@@ -8,5 +8,5 @@ import (
 func Route(r *gin.Engine) {
 	r.POST("/callback", handler.Callback)
 	r.GET("/:userid", handler.GetMessages)
-	r.POST("/:userid", handler.Sendmessages)
+	r.POST("/:userid", handler.SendMessages)
 }
